@@ -51,7 +51,7 @@ app.get('/token', function(request, response) {
 });
 
 
-// Create http server and run it
+// Create http server and run it.
 var server = http.createServer(app);
 var port = process.env.PORT || 1337;
 server.listen(port, function() {
