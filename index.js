@@ -16,7 +16,7 @@ var randomUsername = require('./randos');
 
 // Create Express webapp
 var app = express();
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 /*
 Generate an Access Token for a chat application user - it generates a random
