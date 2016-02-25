@@ -43,7 +43,7 @@ app.get('/', function(request, response) {
     grant.configurationProfileSid = process.env.TWILIO_CONFIGURATION_SID;
     token.addGrant(grant);
 
-    // Serialize the token to a JWT string and include it in a JSON response
+    // Serialize the token to a JWT string and include it in a JSON response 
     response.send({
         identity: identity,
         token: token.toJwt()
