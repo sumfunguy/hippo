@@ -85,7 +85,7 @@ function conversationStarted(conversation) {
 //  Local video preview
 document.getElementById('button-preview').onclick = function () {
     if (!previewMedia) {
-         previewMedia = new Twilio.Conversations.LocalMedia();
+        previewMedia = new Twilio.Conversations.LocalMedia();
         Twilio.Conversations.getUserMedia().then(
         function (mediaStream) {
             previewMedia.addStream(mediaStream);
@@ -95,7 +95,7 @@ document.getElementById('button-preview').onclick = function () {
             console.error('Unable to access local media', error);
             log('Unable to access Camera and Microphone');
         });
-    };
+    }
 };
 
 // Activity log

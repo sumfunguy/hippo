@@ -24,8 +24,8 @@ username for the client requesting a token, and takes a device ID as a query
 parameter.
 */
 
-app.get('/', function(request, response) {
-    var identity = randomUsername();
+app.get('/auth/dealer', function(request, response) {
+    var identity = 'dealer_1';
     
     // Create an access token which we will sign and return to the client, 
     // containing the grant we just created
