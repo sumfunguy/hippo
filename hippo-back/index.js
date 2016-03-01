@@ -54,6 +54,33 @@ app.post('/auth/dealer', function(request, response) {
     });
 });
 
+app.post('/auth/client', function(request, response) {
+    //var identity = 'dealer123';
+    var identity = request.body.identity;
+    // Create an access token which we will sign and return to the client,
+    // containing the grant we just created
+    var token = new AccessToken(
+        process.env.TWILIO_ACCOUNT_SID,
+        process.env.TWILIO_API_KEY,
+        process.env.TWILIO_API_SECRET
+    );
+
+    // Assign the generated identity to the token
+    token.identity = identity;
+
+    //grant the access token Twilio Video capabilities
+    var grant = new ConversationsGrant();
+    grant.configurationProfileSid = process.env.TWILIO_CONFIGURATION_SID;
+    token.addGrant(grant);
+
+    // Serialize the token to a JWT string and include it in a JSON response
+    response.send({
+        identity: identity,
+        token: token.toJwt()
+    });
+});
+
+
 
 // Create http server and run it.
 var server = http.createServer(app);

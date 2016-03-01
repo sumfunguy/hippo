@@ -11,10 +11,9 @@ if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
 $.getJSON('/token', function(data) {
     identity = data.identity;
     var accessManager = new Twilio.AccessManager(data.token);
-
+    console.log(identity);
     // Check the browser console to see your generated identity. 
     // Send an invite to yourself if you want! 
-    console.log(identity);
 
     // Create a Conversations Client and connect to Twilio
     conversationsClient = new Twilio.Conversations.Client(accessManager);
@@ -25,21 +24,23 @@ $.getJSON('/token', function(data) {
 
 // Successfully connected!
 function clientConnected() {
-    document.getElementById('invite-controls').style.display = 'block';
-    log("Connected to Twilio. Listening for incoming Invites as '" + conversationsClient.identity + "'");
+    //document.getElementById('invite-controls').style.display = 'block';
+    //log("Connected to Twilio. Listening for incoming Invites as '" + conversationsClient.identity + "'");
 
-    conversationsClient.on('invite', function (invite) {
-        log('Incoming invite from: ' + invite.from);
-        invite.accept().then(conversationStarted);
-    });
+    //conversationsClient.on('invite', function (invite) {
+        //log('Incoming invite from: ' + invite.from);
+        //invite.accept().then(conversationStarted);
+    //});
 
     // Bind button to create conversation
-    document.getElementById('button-invite').onclick = function () {
-        var inviteTo = document.getElementById('invite-to').value;
+   document.getElementById('button-invite').onclick = function () {
+        //var inviteTo = document.getElementById('invite-to').value;
+        cameraOn();
+        var inviteTo = '123';
         if (activeConversation) {
             // Add a participant
             activeConversation.invite(inviteTo);
-            } else {
+        } else {
             // Create a conversation
             var options = {};
             if (previewMedia) {
@@ -83,13 +84,23 @@ function conversationStarted(conversation) {
 }
 
 //  Local video preview
-document.getElementById('button-preview').onclick = function () {
+function cameraOn() {
     if (!previewMedia) {
-         previewMedia = new Twilio.Conversations.LocalMedia();
+        previewMedia = new Twilio.Conversations.LocalMedia();
         Twilio.Conversations.getUserMedia().then(
         function (mediaStream) {
             previewMedia.addStream(mediaStream);
             previewMedia.attach('#local-media');
+        },
+        function (error) {
+            console.error('Unable to access local media', error);
+            log('Unable to access Camera and Microphone');
+        });
+    } else {
+        Twilio.Conversations.getUserMedia().then(
+        function (mediaStream) {
+            previewMedia.removeStream(mediaStream);
+            previewMedia.detach('#local-media');
         },
         function (error) {
             console.error('Unable to access local media', error);

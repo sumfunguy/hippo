@@ -27,20 +27,29 @@ parameter.
 
 app.get('/token', function(request, response) {
     var requestRemote = require('request');
-    var identity = randomUsername();
-    requestRemote('http://hippo-back.herokuapp.com/', function (error, responseRemote, body) {
-        if (!error && responseRemote.statusCode == 200) {
-            console.log(body) // Show the HTML for the Google homepage. 
+    requestRemote.post({
+        // live url: 'http://hippo-back.herokuapp.com/auth/dealer', //URL to hit
+        url: 'http://127.0.0.1:3000/auth/client',
+        qs: {time: 'now'}, //Query string data
+        method: 'POST',
+        //Lets post the following key/values as form
+        json: {
+            identity: '456'
         }
-        var obj = JSON.parse(body);
-        // Serialize the token to a JWT string and include it in a JSON response
-        response.send({
-            identity: obj.identity,
-            token: obj.token
-        });
+    }, function(error, innerResponse, body) {
+        if(error) {
+            console.log(error);
+        } else {
+            // Serialize the token to a JWT string and include it in a JSON response
+            response.send({
+                identity: body.identity,
+                token: body.token
+            });
+        }
     });
-    
+
 });
+
 
 // Create http server and run it.
 var server = http.createServer(app);
