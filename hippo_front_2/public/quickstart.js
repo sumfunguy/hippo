@@ -11,10 +11,6 @@ if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
 $.getJSON('/token', function(data) {
     identity = data.identity;
     var accessManager = new Twilio.AccessManager(data.token);
-    console.log(identity);
-    // Check the browser console to see your generated identity. 
-    // Send an invite to yourself if you want! 
-
     // Create a Conversations Client and connect to Twilio
     conversationsClient = new Twilio.Conversations.Client(accessManager);
     conversationsClient.listen().then(clientConnected, function (error) {
@@ -34,16 +30,19 @@ function clientConnected() {
 
     // Bind button to create conversation
    document.getElementById('button-invite').onclick = function () {
-        //var inviteTo = document.getElementById('invite-to').value;
         cameraOn();
         var inviteTo = '123';
         if (activeConversation) {
+            activeConversation.localMedia.detach();
+            activeConversation.disconnect();
+            activeConversation = null;
             // Add a participant
-            activeConversation.invite(inviteTo);
+            //activeConversation.invite(inviteTo);
         } else {
             // Create a conversation
             var options = {};
             if (previewMedia) {
+                previewMedia.attach('#local-media');
                 options.localMedia = previewMedia;
             }
             conversationsClient.inviteToConversation(inviteTo, options).then(conversationStarted, function (error) {
@@ -85,6 +84,7 @@ function conversationStarted(conversation) {
 
 //  Local video preview
 function cameraOn() {
+    console.log(previewMedia);
     if (!previewMedia) {
         previewMedia = new Twilio.Conversations.LocalMedia();
         Twilio.Conversations.getUserMedia().then(
@@ -97,16 +97,8 @@ function cameraOn() {
             log('Unable to access Camera and Microphone');
         });
     } else {
-        Twilio.Conversations.getUserMedia().then(
-        function (mediaStream) {
-            previewMedia.removeStream(mediaStream);
-            previewMedia.detach('#local-media');
-        },
-        function (error) {
-            console.error('Unable to access local media', error);
-            log('Unable to access Camera and Microphone');
-        });
-    };
+
+    }
 };
 
 // Activity log
